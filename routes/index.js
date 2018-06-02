@@ -46,11 +46,11 @@ router.post('/calendar', (req, res) => {
 
   request(config)
   .then(results => {
-    let daysWithEvents = results.events.map(element => {
-      return element.day;
-    });
-    console.log(daysWithEvents);
-    res.json(results);
+    let data = results.events.map(element => ({
+      day: element.day,
+      pickup_types: element.flags.map(el => el.name)
+    }));
+    res.json(data);
   })
   .catch(err => {
     res.json(err)
