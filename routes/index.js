@@ -9,7 +9,8 @@ router.post("/suggest", (req, res) => {
   let addressQuery = querystring.escape(req.body.address);
   config.path = `/api/areas/Austin/services/323/address-suggest?q=${addressQuery}`;
 
-  request(config).then(results => {
+  request(config)
+    .then(results => {
       let data = results.map(element => ({
         parcel_id: element.parcel_id,
         name: element.name,
@@ -30,7 +31,8 @@ router.post("/address", (req, res) => {
 
   config.path = `/api/places?parcel_id=${parcelId}&area_id=${areaId}&svc_id=${serviceId}`;
 
-  request(config).then(result => {
+  request(config)
+    .then(result => {
       res.json(result.place.id);
     })
     .catch(err => {
@@ -38,17 +40,26 @@ router.post("/address", (req, res) => {
     });
 });
 
-router.post("/calendar", (req, res) => {
-    config.path = `/api/places/${req.body.id}/services/323/events?hide=reminder_only&after=2018-01-01&before=2019-12-31`;
+//     config.path = `/api/places/${req.body.id}/services/323/events?hide=reminder_only&after=2018-01-01&before=2019-12-31`;
 
-    request(config).then(results => {
-      let data = results.events.map(element => element.flags && {
-              day: element.day,
-              pickup_types: element.flags.map(el => el.name)
-            }).filter(element => element);
-            console.log(data);
-            res.json(data);
-    });
+router.post("/calendar", (req, res) => {
+  config.path = `/api/places/${
+    req.body.id
+  }/services/323/events?hide=reminder_only`;
+
+  request(config).then(results => {
+    let data = results.events
+      .map(
+        element =>
+          element.flags && {
+            day: element.day,
+            pickup_types: element.flags.map(el => el.name)
+          }
+      )
+      .filter(element => element);
+    console.log(data);
+    res.json(data);
   });
+});
 
 module.exports = router;
