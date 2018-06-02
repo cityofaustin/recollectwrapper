@@ -52,8 +52,8 @@ router.post("/calendar", (req, res) => {
       .map(
         element =>
           element.flags && {
-            day: element.day,
-            pickup_types: element.flags.map(el => el.name)
+            date: element.day,
+            services: element.flags.map(el => el.name)
           }
       )
       .filter(element => element);
