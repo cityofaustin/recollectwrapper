@@ -42,7 +42,7 @@ router.post('/address', (req, res) => {
 });
 
 router.post('/calendar', (req, res) => {
-  config.path = `/api/places/${req.body.id}/services/323/events?`;
+  config.path = `/api/places/${req.body.id}/services/323/events?hide=reminder_only`;
 
   request(config)
   .then(results => {
