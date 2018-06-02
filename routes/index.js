@@ -12,7 +12,13 @@ router.post('/suggest', (req, res) => {
 
   request(config)
   .then(results => {
-    res.json(results);
+    let data = results.map(element => ({
+      parcel_id: element.parcel_id,
+      name: element.name,
+      area_id: element.area_id,
+      service_id: element.service_id
+    }));
+    res.json(data);
   })
   .catch(err => {
     res.json(err)
@@ -20,13 +26,11 @@ router.post('/suggest', (req, res) => {
 });
 
 router.post('/address', (req, res) => {
-  let addressQuery = querystring.escape(req.body.name);
   let serviceId = req.body.service_id;
   let parcelId = req.body.parcel_id;
-  let areaName = req.body.area_name;
   let areaId = req.body.area_id;
 
-  config.path = `/api/places?formatted_address=${addressQuery}&parcel_id=${parcelId}&area_id=${areaId}&area_name=${areaName}&svc_id=${serviceId}`;
+  config.path = `/api/places?parcel_id=${parcelId}&area_id=${areaId}&svc_id=${serviceId}`;
 
   request(config)
   .then(results => {
