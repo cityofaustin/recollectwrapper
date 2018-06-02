@@ -1,6 +1,7 @@
 const express = require("express");
 const querystring = require("querystring");
 const request = require("../lib/request");
+const moment = require("moment");
 const router = express.Router();
 
 let config = require("../lib/config");
@@ -40,8 +41,6 @@ router.post("/address", (req, res) => {
     });
 });
 
-//     config.path = `/api/places/${req.body.id}/services/323/events?hide=reminder_only&after=2018-01-01&before=2019-12-31`;
-
 router.post("/calendar", (req, res) => {
   config.path = `/api/places/${
     req.body.id
@@ -57,7 +56,26 @@ router.post("/calendar", (req, res) => {
           }
       )
       .filter(element => element);
-    console.log(data);
+    res.json(data);
+  });
+});
+
+router.post("/nextbulkpickup", (req, res) => {
+  const after = moment().format("YYYY-MM-DD");
+  const before = moment()
+    .add(1, "y")
+    .format("YYYY-MM-DD");
+  config.path = `/api/places/${
+    req.body.id
+  }/services/323/events?hide=reminder_only&after=${after}&before=${before}`;
+  request(config).then(results => {
+    let data = results.events
+      .filter(
+        event =>
+          event.flags && event.flags.find(f => f.name == "BulkItemCollection")
+      )
+      .map(element => element.day)
+      .filter(element => element);
     res.json(data);
   });
 });
