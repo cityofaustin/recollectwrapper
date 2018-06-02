@@ -33,8 +33,8 @@ router.post('/address', (req, res) => {
   config.path = `/api/places?parcel_id=${parcelId}&area_id=${areaId}&svc_id=${serviceId}`;
 
   request(config)
-  .then(results => {
-    res.json(results);
+  .then(result => {
+    res.json(result.place.id);
   })
   .catch(err => {
     res.json(err)
